@@ -1,0 +1,151 @@
+> SHOW "MAIN CREDITS"
+
+               .------------------.
+               | > TERMINAL PHASE |
+               '------------------'
+%
+                   PROGRAMMING
+             Christopher Lemmer Webber
+%
+                    ASCII ART
+             Christopher Lemmer Webber
+%
+                   LEVEL DESIGN
+             Christopher Lemmer Webber
+%
+
+> SHOW "ULTRA SUPPORTERS"
+
+
+                \       |        /
+           \                          /
+             .======================.
+             |**********************|
+         --  |*  ULTRA SUPPORTERS  *|   --
+             |**********************|
+             '======================'
+           /                          \
+                /       |        \
+
+%
+                     dansup
+%
+                    Nick + Lp
+%
+
+> SHOW "PLAYER SHIP"
+
+          *
+                             *              *
+    *         .---.
+               \/  \                *
+            _   "- .;
+          _' \,,-\ (@\       __==.       __==.
+          '_'-''-/ '-/==   ----'=="    ----'=="
+                /-. /''       "-"         "-"
+        *      /__:/
+                                  *
+    *                  *                  *
+
+
+> SHOW "MEGA SUPPORTERS"
+
+               .==================.
+               | MEGA  SUPPORTERS |
+               '=================='
+%
+                   Aeva Palecek
+%
+                     DJ Sundog
+%
+                  James Valleroy
+%
+               Jonathan Frederickson
+%
+
+> SHOW "FIRING AT ENEMIES"
+
+                                 *          .
+                     *                     /(  .
+                                       .--.  '/(
+      *                         *     /.    <  (
+                  *                  /_'/  << ;-.
+                 _   __==.           '----'_--'-'
+             * _   ----'=="             -="
+    *            -    "-"           *            *
+                             *
+   _   __==.                         .     *
+ _   ----'=="                       /(  .      *
+   -    "-"             *       .--.  '/(
+                               /.    <  (
+      *           *           /_'/  << ;-.       *
+                           *  '----'_--'-'
+   *      *                      -="         *
+
+
+> SHOW "SUPPORTERS"
+
+                  .------------.
+                  | SUPPORTERS |
+                  '------------'
+%
+                 Charles Stanhope
+%
+                  Craig Maloney
+%
+                      elmiko
+%
+                    Tim Howes
+%
+
+        (and many more anonymous supporters!)
+%
+
+> SHOW "TECHNOLOGY USED"
+
+             TERMINAL PHASE IS BASED ON:
+             ---------------------------
+
+                  Spritely Goblins:
+          https://gitlab.com/spritely/goblins
+%
+           The Racket Programming Language:
+               https://racket-lang.org/
+%
+                  The Lux Game Loop:
+           https://docs.racket-lang.org/lux/
+%
+             The Raart Ansi Art Library:
+       https://pkgs.racket-lang.org/package/raart
+%
+
+           Thanks also to Samsung Stack Zero,
+        who has supported Spritely's development!
+%
+
+> SHOW "THANKS"
+
+                THANKS FOR PLAYING!
+                     <3 <3 <3
+%
+%
+             THIS GAME IS FREE AND OPEN
+         SOURCE SOFTWARE RELEASED UNDER GPLv3+
+%
+      https://gitlab.com/dustyweb/terminal-phase
+%
+%
+              THIS GAME IS MADE POSSIBLE
+                  BY PEOPLE LIKE YOU.
+             YOU CAN APPEAR IN THE CREDITS:
+
+           https://www.patreon.com/cwebber
+%
+%
+            THANK YOU TO EVERYONE WHO HAS
+       SUPPORTED MY WORK AND TERMINAL PHASE SO FAR
+
+> END
+
+           !!!!! SEE YOU NEXT TIME !!!!!
+           !!!!!   SPACE COWPOKE   !!!!!

@@ -1,0 +1,182 @@
+I had a chat with my friend Jessica Tallon about how Terminal Phase's
+architecture works.
+
+The ideal thing to do would be to deconstructure this chat into
+something coherent that walks through the architecture.  In the
+meanwhile, Jessica gave me permission to commit this chat, so here we
+go.  Hope it's interesting!
+
+: <tsyesika> so game development 101 question. How does the map work? Is it just
+:            an array of characters that you advance the index of every tick or?
+:                                                                         [14:08]
+: <dustyweb> ah!  yes there's a lot to discuss here.  It's just an array, yes
+:                                                                         [14:09]
+: <dustyweb> I should probably do a few videos on how it works
+: <dustyweb> there's a lot of complicated stuff to make everything look smooth
+:            despite being on a grid
+: <dustyweb> to avoid ships eg jumping two spaces
+: <dustyweb> when both they move and the camera/terrain move
+: <dustyweb> the secret is: there is no camera ;)
+: <dustyweb> instead, the terrain just moves on its own, it's a fixed grid that
+:            things move around on  [14:10]
+: <dustyweb> there are multiple phases:
+: <dustyweb>  - first, the level advances the stage, if enough time has passed:
+:                                                                         [14:11]
+: <dustyweb>    - it "slurps" a new row of columns off the "level tape" and
+:            transforms them into the enemies, reading their flavors as well
+:            (see level.txt, and see levels/level1.txt).  To read the level:
+: <dustyweb>      - top section is the "flavors" of characters
+: <dustyweb>      - middle section is the map
+: <dustyweb>      - bottom section is "level instructions" for when that column
+:            is read (eg the numbers dictate level speed)
+: <dustyweb>    - assuming the level has advanced, all the objects currently
+:            alive are sent a 'level-advance message and have a chance to act
+:                                                                         [14:12]
+: <dustyweb> (so eg, simple enemies like mines will just move with the terrain)
+: <dustyweb>  - next, all objects get a chance to "tick".  they can do whatever
+:            on this tick.  this happens whether the level advances or not.
+:                                                                         [14:13]
+: <dustyweb>  - then every object declares its "posinfos"
+: <dustyweb> it can be one or a list
+: <dustyweb> (struct posinfo
+: <dustyweb>   (x y              ; x & y coords
+: <dustyweb>    char color       ; character and color
+: <dustyweb>    layer)           ; used both for rendering-order and collision
+:            category
+: <dustyweb>   #:transparent)
+: <dustyweb> so for instance, the player's alive-posinfo is:  [14:14]
+: <dustyweb>   (define (alive-posinfo)
+: <dustyweb>     (posinfo ($ x) ($ y)
+: <dustyweb>              #\> 'bryellow
+: <dustyweb>              'player))
+: <dustyweb> 
+: <dustyweb> that says its coordinates, that it uses a > character, that it
+:            should be bright yellow, and that it's on the "player" layer
+: <dustyweb>  - now collision detection is run.  Since this is such a simple
+:            grid I don't do anything complicated like a quadtree, I just group
+:            things (see the do-collisions function in level.rkt).  We walk
+:            through every object's posinfos and group all the ones that are on
+:            the same character together.  [14:15]
+: <tsyesika> huh interesting  [14:16]
+: <dustyweb>  - now we tell all objects that have a posinfo on the same
+:            character as another about that collision and hand it the object
+:            reference to the colliding object and its corresponding posinfo
+:            information so you can see, "oh, I just collided with a player
+:            bullet... I'm an enemy, so now I'll take damage"
+: <tsyesika> does this mean if you wanted to create say a second level you could
+:            just make another level txt and everything would just work?  [14:17]
+: <dustyweb> yes, in fact you should try it
+: <dustyweb> you can pass in the filename as an argument
+: <tsyesika> alright :) 
+: <dustyweb> try running the level-tests/squigglers.txt level
+: <dustyweb> just pass it in as an argument
+: <dustyweb> levels are very easy to make.
+: <dustyweb> so, now all collisions have run; objects have taken damage or done
+:            whatever weird effects they've decided  [14:18]
+: <dustyweb>  - now we render.  What we do is we gather all the posinfos *again*
+:            and group them by render layer.  [14:19]
+: <dustyweb> why again?
+: <dustyweb> because remember that posinfos are used for both collision and
+:            rendering
+: <dustyweb> and objects may have changed (eg died) during collisions
+: <dustyweb> so may have a new appearance
+: <dustyweb> so now we group things into layers and blit each layer one by one
+: <tsyesika> xD It's a lot more complex than I had in my head   [14:20]
+: <dustyweb> (define render-layer-order
+: <dustyweb>   '(powerup
+: <dustyweb>     explosion
+: <dustyweb>     enemy
+: <dustyweb>     enemy-bullet
+: <dustyweb>     player-bullet
+: <dustyweb>     terrain
+: <dustyweb>     player))
+: <dustyweb> now we blit each one in order
+: <dustyweb> this may change in the future
+: <dustyweb> currently powerups render first (which don't exist yet), then
+:            explosions, then enemies, then enemy bullets, etc)  [14:21]
+: <dustyweb> and that's basically how the game loop works!
+: <dustyweb> does that all make sense?
+: <tsyesika> yeah it does :)
+: <dustyweb> now that I've written it out I probably should save this somewhere
+:            so it isn't lost to time :)
+: <tsyesika> thanks for explaining it
+: <dustyweb> mind if I commit this chat as-is into the repo? ;)
+: <tsyesika> go ahead  [14:22]
+: <dustyweb> cool
+: <dustyweb> did you try running one of the other level files?
+: <dustyweb> oh they used to loop
+: <dustyweb> they might end immediately now
+: <dustyweb> oops
+: <tsyesika> i did, I tried the squiggle one
+: <dustyweb> I used to have it so that hwen the level ended
+: <dustyweb> it would just loop
+: <dustyweb> but I wanted a level that "finishes" for yesterday's release
+: <dustyweb> I should include a --loop command line arg :D  [14:23]
+: <dustyweb> you should try making a level and send it to me to see if I can
+:            beat it ;D  [14:24]
+: <tsyesika> what's the difference between the lowercase and capital F?  [14:25]
+: <dustyweb> ah!
+: <dustyweb> so first of all, the way flavoring works
+: <dustyweb> is that it flavors the first non-space character
+: <dustyweb> from top to bottom
+: <dustyweb> according to that row
+: <dustyweb> it basically strips out the spaces and then applies them
+:            consecutively
+: <dustyweb> f means it fires a bullet, but the bullet isn't damaged by player
+:            shots  [14:26]
+: <dustyweb> (white bullets)
+: <dustyweb> F fires bullets that can be damaged by player shots
+: <dustyweb> but also "consume" them
+: <dustyweb> so they're both easier and harder
+: <dustyweb> because they can take two shots instead of one, but you can "save
+:            yourself" from the bullets
+: <dustyweb> here's where the characters are dispatched
+:            https://gitlab.com/dustyweb/terminal-phase/blob/21c3e6904cfb3fbbd8ccf47d975d7adf17578969/level.rkt#L309
+:                                                                         [14:28]
+: <dustyweb> if you're like "wow, level.rkt is a monster", you're right
+: <dustyweb> it does way too much ;)
+: <dustyweb> probably the easiest enemy to start studying is the mine
+:            https://gitlab.com/dustyweb/terminal-phase/blob/21c3e6904cfb3fbbd8ccf47d975d7adf17578969/sprites.rkt#L639
+:                                                                         [14:29]
+: <dustyweb> though you can see the two kinds of "ray" enemy bullets here:
+:            https://gitlab.com/dustyweb/terminal-phase/blob/21c3e6904cfb3fbbd8ccf47d975d7adf17578969/sprites.rkt#L548
+:                                                                         [14:30]
+: <dustyweb> the key is #:collide?
+: <dustyweb> I should get rid of that define-spawned shit
+: <dustyweb> same as  [14:31]
+: <dustyweb> (define move-countdown
+: <dustyweb>   (spawned ^loopdown enemy-bullet:move-speed))
+: <dustyweb> I have a reason I added that macro but it's debugging related
+: <dustyweb> er
+: <tsyesika> what's the 8 at the bottomm do?
+: <dustyweb> same as
+: <dustyweb> (define move-countdown
+: <dustyweb>   (spawn ^loopdown enemy-bullet:move-speed))
+: <tsyesika> *bottom
+: <dustyweb> 8 sets the speed
+: <dustyweb> default speed is 6
+: <dustyweb> try setting it to 4
+: <dustyweb> and you'll see :)
+: <dustyweb> you'll also see how things start messing up ;)
+: <dustyweb> I haven't updated most of the enemies to support multiple speeds
+: <dustyweb> lower is faster  [14:32]
+: <dustyweb> it's the number of ticks before advancement
+: <dustyweb> terminal phase runs at 30fps
+: <dustyweb> so you may wonder, why are there these cell things?  [14:33]
+: <dustyweb> why not just use scheme's "set!" operator
+: <dustyweb> that's because there's no real mutation
+: <dustyweb> I could insert a time traveling debugger that lets you travel back
+:            and forth between frames
+: <dustyweb> everything is transactional
+: <dustyweb> which, if that sounds kind of bonkers  [14:34]
+: <dustyweb> it is kind of bonkers
+: <dustyweb> but cool I think?
+: <tsyesika> haha I set it to 1
+: <dustyweb> good luck with that one lol
+: <dustyweb> yeah the terrain moves faster than bullets at that point
+: <dustyweb> yikes  [14:35]
+: <dustyweb> if you want to do a code dive together, lmk
+: <dustyweb> I'd be happy to do it
+: <dustyweb> I do plan on having fast levels  [14:38]
+: <dustyweb> where you're mostly dodging terrain
+: <tsyesika> yeah :)   [14:41]

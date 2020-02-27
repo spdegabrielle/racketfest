@@ -1,0 +1,47 @@
+#+TITLE: Terminal Phase
+
+* What is this?
+
+Why, a space shooter game that runs in your terminal, of course!
+
+It's also two things:
+
+ - A reward for [[https://www.patreon.com/cwebber][Patreon donors]]; if you donate, you can show up in the credits!
+ - A test program for [[https://gitlab.com/spritely/goblins][Spritely Goblins]].
+
+While Goblins is primarily designed for asynchronous distributed
+programming, I wanted to be sure that the non-distributed programming
+aspects worked solidly before I moved on to ensuring that the
+distributed programming aspects work nicely too.
+
+* License?
+
+GPL v3 or any later version of the GPL published by the FSF.
+
+(Spritely Goblins, on the other hand, is Apache v2.)
+
+* Installing
+
+You will need Racket 7.3 or later (Racket 7.2 might work, not sure).
+
+** Installing from raco
+
+The easiest way to install this program is to first install Racket.
+Then run:
+
+: raco pkg install terminal-phase
+
+Now you can just run the game by typing:
+
+: raco terminal-phase
+
+** Installing / developing from git
+
+Do a git checkout of this repository.  Change directory to the
+checkout, then run:
+
+: raco pkg install
+
+Then you can run it like:
+
+: racket terminal-phase.rkt
